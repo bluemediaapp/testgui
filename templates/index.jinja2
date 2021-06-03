@@ -1,0 +1,31 @@
+<head>
+    <title>Test page</title>
+    <script>
+        let username = "exampleuser", password = "example123";
+        let apikey = null;
+        let url = "http://localhost:2865/api";
+        fetch(url + "/live/recommended").then((res) => {
+            let data = JSON.parse(res.text);
+            console.log(data);
+        })
+        function login() {
+            fetch(url + "/live/login", {headers: {"username": username, "password": password}}).then((res) => {
+                let data = JSON.parse(res.text);
+                console.log(data);
+            });
+        }
+        function signup() {
+            fetch(url + "/live/register", {headers: {"username": username, "password": password}}).then((res) => {
+                let data = JSON.parse(res.text);
+                console.log(data);
+            });
+        }
+    </script>
+</head>
+
+
+<body>
+    <button onclick="login()">Log in</button>
+    <button onclick="signup()">Register</button>
+</body>
+
