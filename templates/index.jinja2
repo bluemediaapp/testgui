@@ -4,28 +4,70 @@
         let username = "exampleuser", password = "example123";
         let apikey = null;
         let url = "http://localhost:2865/api";
-        fetch(url + "/live/recommended").then((res) => {
-            let data = JSON.parse(res.text);
-            console.log(data);
-        })
         function login() {
-            fetch(url + "/live/login", {headers: {"username": username, "password": password}}).then((res) => {
-                let data = JSON.parse(res.text);
-                console.log(data);
+            fetch(url + "/live/login", {headers: {"username": username, "password": password}}).then(async (res) => {
+                setApiKey(await res.text());
             });
         }
         function signup() {
-            fetch(url + "/live/register", {headers: {"username": username, "password": password}}).then((res) => {
-                let data = JSON.parse(res.text);
-                console.log(data);
+            fetch(url + "/live/register", {headers: {"username": username, "password": password}}).then(async (res) => {
+                setApikey(await res.text());
             });
+        }
+        function setApiKey(key) {
+            apikey = key;
+            apikeygui.innerText = key;
+        }
+        function getRecommended() {
+            fetch(url + "/live/recommended?ignore=0", {headers: {"token": apikey}}).then(async (res) => {
+                raw = await res.text(); 
+                data = JSON.parse(raw)
+                recommendationdatarawgui.innerText = raw;
+                for (let video of data) {
+                    displayRecommendedVideo(video);
+                }
+            }) 
+        }
+
+        function displayRecommendedVideo(video) {
+            let video_container = document.createElement("div"); 
+            
+
+            // Basic descriptions
+            let description = document.createElement("p");
+            description.innerHTML = `<b>Id:</b> ${video.id} <b>Description:</b> ${video.description}`
+            video_container.appendChild(description);
+            
+            // Video display
+            let video_display = document.createElement("video");
+            video_display.src = `https://siasky.net/${video.storage_key}`
+            video_display.autoplay = true;
+            video_display.loop = true;
+            video_display.muted = true;
+            video_display.style.height = "500px";
+            video_display.style.width = "500px";
+            video_container.appendChild(video_display);
+
+            // Insert it
+            videoscontainer.appendChild(video_container);
         }
     </script>
 </head>
 
 
 <body>
+    <h1>Auth</h1>
+    <h2>Actions</h2>
     <button onclick="login()">Log in</button>
     <button onclick="signup()">Register</button>
+    <h2>Info</h2>
+    <span>API key</span>
+    <span id="apikeygui">null</span>
+
+    <h1>Recommendations</h1>
+    <button onclick="getRecommended()">Get Recommendations</button>
+    <div id="videoscontainer"></div>
+    <span id="recommendationdatarawgui">null</span>
+
 </body>
 

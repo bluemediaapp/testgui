@@ -15,6 +15,6 @@ def explore_db(database):
     return dumps(list(blue[database].find()))
 @app.route("/db/clear/<string:database>")
 def clear_db(database):
-    blue[database].delete_many()
+    blue[database].delete_many({})
     return ""
 app.run("0.0.0.0", debug=True)
