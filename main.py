@@ -13,6 +13,9 @@ def index():
 @app.route("/db/show/<string:database>")
 def explore_db(database):
     return dumps(list(blue[database].find()))
+@app.route("/db/tables")
+def list_tables():
+    return ", ".join(blue.collection_names())
 @app.route("/db/clear/<string:database>")
 def clear_db(database):
     blue[database].delete_many({})
